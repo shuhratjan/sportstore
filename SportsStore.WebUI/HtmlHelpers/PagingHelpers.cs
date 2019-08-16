@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 using System.Web.Mvc;
 using SportsStore.WebUI.Models;
@@ -14,12 +15,12 @@ namespace SportsStore.WebUI.HtmlHelpers
              {
                  TagBuilder tag = new TagBuilder("a");
                  tag.MergeAttribute("href", pageUrl(i));
-                 tag.InnerHtml = i.ToString();
+                 tag.InnerHtml = i.ToString(CultureInfo.InvariantCulture);
                  if(i == pagingInfo.CurrentPage)
                  {
                      tag.AddCssClass("selected");
                  }
-                 result.Append(tag.ToString());
+                 result.Append(tag);
              }
              return MvcHtmlString.Create(result.ToString());
          }

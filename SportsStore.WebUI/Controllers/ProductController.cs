@@ -14,7 +14,7 @@ namespace SportsStore.WebUI.Controllers
         private readonly IProductRepository _repository;
 
         public ProductController(IProductRepository productRepository)
-        {
+        {   
             _repository = productRepository;
         }
 
@@ -23,14 +23,14 @@ namespace SportsStore.WebUI.Controllers
             ProductsListViewModel viewModel = new ProductsListViewModel
                                                {
                                                    Products = _repository.Products
-                                                   .Where(p => category == null || p.Category == category)
-                                                   .OrderBy(p => p.ProductID)
-                                                   .Skip((page - 1) * PageSize)
-                                                   .Take(PageSize),
+                                                       .Where(p => category == null || p.Category == category)
+                                                       .OrderBy(p => p.ProductID)
+                                                       .Skip((page - 1) * PageSize)
+                                                       .Take(PageSize),
                                                    PagingInfo = new PagingInfo{
                                                        CurrentPage = page,
                                                        ItemsPerPage = PageSize,
-                                                       TotalItems = _repository.Products.Count()
+                                                       TotalItems =  category== null ?_repository.Products.Count():_repository.Products.Count(e => e.Category ==category)
                                                    },
                                                    CurrentCategory = category
                                                };

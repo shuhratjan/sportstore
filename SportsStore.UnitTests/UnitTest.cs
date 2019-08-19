@@ -158,8 +158,7 @@ namespace SportsStore.UnitTests
                                                         new Product{ProductID = 4, Name = "P4", Category = "Cat2"},
                                                         new Product{ProductID = 5, Name = "P5", Category = "Cat3"}
                                                     }.AsQueryable());
-            ProductController target = new ProductController(mock.Object);
-            target.PageSize = 3;
+            ProductController target = new ProductController(mock.Object) {PageSize = 3};
 
             int res1 = ((ProductsListViewModel)target.List("Cat1").Model).PagingInfo.TotalItems;
             int res2 = ((ProductsListViewModel)target.List("Cat2").Model).PagingInfo.TotalItems;
@@ -171,5 +170,92 @@ namespace SportsStore.UnitTests
             Assert.AreEqual(res3, 1);
             Assert.AreEqual(resAll, 5);
         }
+
+        [TestMethod]
+        public void Can_Add_New_Lines()
+        {
+            Product p1 = new Product { ProductID = 1, Name = "P1" };
+            Product p2 = new Product { ProductID = 2, Name = "P2" };
+
+            Cart target = new Cart();
+
+            target.AddItem(p1, 1);
+            target.AddItem(p2, 1);
+            CartLine[] result = target.Lines.ToArray();
+
+            Assert.AreEqual(result.Length, 2);
+            Assert.AreEqual(result[0].Product, p1);
+            Assert.AreEqual(result[1].Product, p2);
+        }
+
+        [TestMethod]
+        public void Can_Add_Quantity_For_Existing_Lines()
+        {
+
+            Product p1 = new Product { ProductID = 1, Name = "P1" };
+            Product p2 = new Product { ProductID = 2, Name = "P2" };
+
+            Cart target = new Cart();
+
+            target.AddItem(p1, 1);
+            target.AddItem(p2, 1);
+            target.AddItem(p1, 10);
+            CartLine[] result = target.Lines.OrderBy(c => c.Product.ProductID).ToArray();
+
+            Assert.AreEqual(result.Length, 2);
+            Assert.AreEqual(result[0].Quantity, 11);
+            Assert.AreEqual(result[1].Quantity, 1);
+        }
+
+        [TestMethod]
+        public void Can_Remove_Line()
+        {
+            Product p1 = new Product { ProductID = 1, Name = "P1" };
+            Product p2 = new Product { ProductID = 2, Name = "P2" };
+            Product p3 = new Product { ProductID = 3, Name = "P3" };
+
+            Cart target = new Cart();
+            target.AddItem(p1, 1);
+            target.AddItem(p2, 3);
+            target.AddItem(p3, 5);
+            target.AddItem(p2, 1);
+
+            target.RemoveLine(p2);
+
+            Assert.AreEqual(target.Lines.Count(c => c.Product == p2), 0);
+            Assert.AreEqual(target.Lines.Count(), 2);
+        }
+
+        [TestMethod]
+        public void Calculate_Cart_Total()
+        {
+            Product p1 = new Product { ProductID = 1, Name = "P1", Price = 100M };
+            Product p2 = new Product { ProductID = 2, Name = "P2", Price = 50M };
+
+            Cart target = new Cart();
+
+            target.AddItem(p1, 1);
+            target.AddItem(p2, 1);
+            target.AddItem(p1, 3);
+
+            decimal result = target.ComputeTotalValue();
+            Assert.AreEqual(result, 450M);
+        }
+
+        [TestMethod]
+        public void Can_Clear_Contents()
+        {
+            Product p1 = new Product {ProductID = 1, Name = "P1", Price = 100M};
+            Product p2 = new Product {ProductID = 2, Name = "P2", Price = 50M};
+
+            Cart target = new Cart();
+
+            target.AddItem(p1, 1);
+            target.AddItem(p2, 1);
+
+            target.Clear();
+            Assert.AreEqual(target.Lines.Count(), 0);
+        }
+
     }
 }

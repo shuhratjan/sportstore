@@ -12,6 +12,10 @@ section {
     display: block;
 }
 
+h2 {
+    margin-top: 0.3em;
+}
+
 /* Styles for basic forms
 -----------------------------------------------------------*/
 
@@ -111,6 +115,22 @@ div.item h4 {
     margin: .4em 0 0 0;
 }
 
+div.item form {
+    float: right;
+}
+
+div.item input {
+    color: white;
+    background-color: #333;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+form {
+    margin: 0;
+    padding: 0;
+}
+
 div.pager {
     text-align: right;
     border-top: 2px solid skyblue;
@@ -132,6 +152,21 @@ div.pager a:hover {
 div.pager a.selected {
     background-color: #353535;
     color: white;
+}
+
+tfoot td {
+    border-top: 1px dotted green;
+    font-weight: bold;
+}
+
+.actionButton a, input.actionButton {
+    font: .8em Arial;
+    color: white;
+    margin: .5em;
+    text-decoration: none;
+    padding: .15em 1.5em .2em 1.5em;
+    background-color: #353535;
+    border: 1px solid black;
 }
 
 

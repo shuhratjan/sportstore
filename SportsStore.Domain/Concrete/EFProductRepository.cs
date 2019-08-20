@@ -11,5 +11,14 @@ namespace SportsStore.Domain.Concrete
         {
             get { return context.Products; }
         }
+
+        public void SaveProject(Product product)
+        {
+            if(product.ProductID == 0)
+            {
+                context.Products.Add(product);
+            }
+            context.SaveChanges();
+        }
     }
 }

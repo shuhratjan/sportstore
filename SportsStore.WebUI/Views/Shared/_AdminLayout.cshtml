@@ -1,0 +1,15 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>@Page.Title</title>
+        <link href="@Url.Content("~/Content/Admin.css")" rel="stylesheet" type="text/css"/>
+        @RenderSection("head", required: false)
+    </head>
+    <body>
+        @if(TempData["message"]!=null)
+        {
+           <div class="Message">@TempData["message"]</div> 
+        }
+        @RenderBody()
+    </body>
+</html>

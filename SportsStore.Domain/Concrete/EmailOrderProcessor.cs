@@ -8,40 +8,40 @@ namespace SportsStore.Domain.Concrete
 {
     public class EmailSettings
     {
-        public string MailToAddress = "oreders@example.com";
-        public string MailFromAddress = "sportsstore@example.com";
-        public bool UseSsl = true;
-        public string Username = "MySmtpUsername";
-        public string Password = "MySmtpPassword";
-        public string ServerName = "smtp.example.com";
-        public int ServerPort = 587;
+        public const string MailToAddress = "oreders@example.com";
+        public const string MailFromAddress = "sportsstore@example.com";
+        public const bool UseSsl = true;
+        public const string Username = "MySmtpUsername";
+        public const string Password = "MySmtpPassword";
+        public const string ServerName = "smtp.example.com";
+        public const int ServerPort = 587;
         public bool WriteAsFile =false;
-        public string FileLocation = @"c:\sports_store_emails";
+        public const string FileLocation = @"c:\sports_store_emails";
     }
 
     public class EmailOrderProcessor : IOrderProcessor
     {
-        private EmailSettings emailSettings;
+        private readonly EmailSettings _emailSettings;
 
         public EmailOrderProcessor(EmailSettings settings)
         {
-            emailSettings = settings;
+            _emailSettings = settings;
         }
 
         public void ProcessOrder(Cart cart, ShippingDetails shippingInfo)
         {
             using (var smtpClient = new SmtpClient())
             {
-                smtpClient.EnableSsl = emailSettings.UseSsl;
-                smtpClient.Host = emailSettings.ServerName;
-                smtpClient.Port = emailSettings.ServerPort;
+                smtpClient.EnableSsl = EmailSettings.UseSsl;
+                smtpClient.Host = EmailSettings.ServerName;
+                smtpClient.Port = EmailSettings.ServerPort;
                 smtpClient.UseDefaultCredentials = false;
-                smtpClient.Credentials = new NetworkCredential(emailSettings.Username, emailSettings.Password);
+                smtpClient.Credentials = new NetworkCredential(EmailSettings.Username, EmailSettings.Password);
 
-                if(emailSettings.WriteAsFile)
+                if(_emailSettings.WriteAsFile)
                 {
                     smtpClient.DeliveryMethod= SmtpDeliveryMethod.SpecifiedPickupDirectory;
-                    smtpClient.PickupDirectoryLocation = emailSettings.FileLocation;
+                    smtpClient.PickupDirectoryLocation = EmailSettings.FileLocation;
                     smtpClient.EnableSsl = false;
                 }
 
@@ -69,9 +69,9 @@ namespace SportsStore.Domain.Concrete
                     .AppendLine("---")
                     .AppendFormat("Gift wrap: {0}", shippingInfo.GiftWrap ? "Yes" : "No");
 
-                MailMessage mailMessage =  new MailMessage(emailSettings.MailFromAddress, emailSettings.MailToAddress, "New order submitted!", body.ToString());
+                MailMessage mailMessage =  new MailMessage(EmailSettings.MailFromAddress, EmailSettings.MailToAddress, "New order submitted!", body.ToString());
 
-                if(emailSettings.WriteAsFile)
+                if(_emailSettings.WriteAsFile)
                 {
                     mailMessage.BodyEncoding = Encoding.ASCII;
                 }

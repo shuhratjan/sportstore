@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
 using SportsStore.Domain.Abstract;
 using SportsStore.Domain.Entities;
 
 namespace SportsStore.WebUI.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         private readonly IProductRepository _repository;
@@ -38,6 +36,24 @@ namespace SportsStore.WebUI.Controllers
                 return RedirectToAction("Index");
             }
             return View(product);
+        }
+
+        public ViewResult Create()
+        {
+            return View("Edit", new Product());
+        }
+
+        [HttpPost]
+        public ActionResult Delete(int productId)
+        {
+            Product prod = _repository.Products.FirstOrDefault(p => p.ProductID == productId);
+
+            if(prod != null)
+            {
+                _repository.DeleteProduct(prod);
+                TempData["message"] = string.Format("{0} was deleted", prod.Name);
+            }
+            return RedirectToAction("Index");
         }
     }
 }
